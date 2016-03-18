@@ -39,6 +39,8 @@ Mobify.UI.Magnifik = (function() {
           , seekImage: true
             // Whether clicking anywhere on zoomed in image will stop zooming.
           , clickCloses: true
+            // Center zoom
+          , centerZoom: true
             // Override to use alternate event for all magnifik control interactions.
           , activationEvent: 'click'
             // Default style applied to canvas. Overriding replaces the whole object.
@@ -203,7 +205,9 @@ Mobify.UI.Magnifik = (function() {
         this.$stage.append(this.$canvas);
         this.$stage.addClass(this._getClass('zooming'));
 
-        var imgAspect = $img.prop('naturalHeight') / $img.prop('naturalWidth')
+        var imgNaturalHeight = $img.prop('naturalHeight')
+          , imgNaturalWidth = $img.prop('naturalWidth')
+          , imgAspect = imgNaturalHeight / imgNaturalWidth
           , thumbWidth = this.$thumb.prop('offsetWidth')
           , smallWidth = this.$canvas.prop('offsetWidth')
           , bigWidth = thumbWidth
@@ -211,10 +215,15 @@ Mobify.UI.Magnifik = (function() {
           , bigHeight = thumbWidth * imgAspect
           , thus = this;
 
-        thus.$canvas.prop('scrollLeft', Math.max(0, Math.min(bigWidth - smallWidth,
-            bigWidth * leftRatio - smallWidth / 2)));
-        thus.$canvas.prop('scrollTop', Math.max(0, Math.min(bigHeight - smallHeight,
-            bigHeight * topRatio - smallHeight / 2)));
+        if(this.options.centerZoom) {
+          thus.$canvas.prop('scrollLeft', Math.max(0, imgNaturalWidth / 2));
+          thus.$canvas.prop('scrollTop', Math.max(0, imgNaturalHeight / 2));
+        } else {
+          thus.$canvas.prop('scrollLeft', Math.max(0, Math.min(bigWidth - smallWidth,
+              bigWidth * leftRatio - smallWidth / 2)));
+          thus.$canvas.prop('scrollTop', Math.max(0, Math.min(bigHeight - smallHeight,
+              bigHeight * topRatio - smallHeight / 2)));
+        }
 
         thus.$element.trigger('magnifik:open');
     };

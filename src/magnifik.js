@@ -170,6 +170,8 @@ Mobify.UI.Magnifik = (function() {
 
         var leftRatio = 0.5
           , topRatio = 0.5
+          , leftCenterRatio = 0.5
+          , topCenterRatio = 0.5
           , $img = $(event.target)
           , $link
           , $parent
@@ -191,6 +193,8 @@ Mobify.UI.Magnifik = (function() {
         } else {
             leftRatio = event.offsetX / $img.prop('offsetWidth');
             topRatio = event.offsetY / $img.prop('offsetHeight');
+            leftCenterRatio = ($img.width() / 2) / $img.prop('offsetWidth');
+            topCenterRatio = ($img.height() / 2) / $img.prop('offsetHeight');
         }
 
         $link = $img.filter('[href]').add($img.parent('[href]'));
@@ -216,8 +220,10 @@ Mobify.UI.Magnifik = (function() {
           , thus = this;
 
         if(this.options.centerZoom) {
-          thus.$canvas.prop('scrollLeft', Math.max(0, imgNaturalWidth / 2));
-          thus.$canvas.prop('scrollTop', Math.max(0, imgNaturalHeight / 2));
+          thus.$canvas.prop('scrollLeft', Math.max(0, Math.min(bigWidth - smallWidth,
+              bigWidth * leftCenterRatio - smallWidth / 2)));
+          thus.$canvas.prop('scrollTop', Math.max(0, Math.min(bigHeight - smallHeight,
+              bigHeight * topCenterRatio - smallHeight / 2)));
         } else {
           thus.$canvas.prop('scrollLeft', Math.max(0, Math.min(bigWidth - smallWidth,
               bigWidth * leftRatio - smallWidth / 2)));
